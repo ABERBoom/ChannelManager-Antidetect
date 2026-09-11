@@ -1103,7 +1103,7 @@ if (`$f.ShowDialog(`$form) -eq 'OK') { Write-Output (Split-Path `$f.FileName) }
             }
             
             # Static files
-            elseif ($path -eq '/' -or $path -match '^/(index\.html|index\.css|app\.js)$') {
+            elseif ($path -eq '/' -or $path -match '^/(index\.html|index\.css|app\.js|favicon\.ico)$') {
                 $filePath = $path
                 if ($filePath -eq '/') { $filePath = '/index.html' }
                 $fullPath = Join-Path $scriptDir "webapp$filePath"
@@ -1113,6 +1113,7 @@ if (`$f.ShowDialog(`$form) -eq 'OK') { Write-Output (Split-Path `$f.FileName) }
                     if ($ext -eq '.html') { $res.ContentType = 'text/html; charset=utf-8' }
                     elseif ($ext -eq '.css') { $res.ContentType = 'text/css; charset=utf-8' }
                     elseif ($ext -eq '.js') { $res.ContentType = 'application/javascript; charset=utf-8' }
+                    elseif ($ext -eq '.ico') { $res.ContentType = 'image/x-icon' }
                     
                     $buffer = [IO.File]::ReadAllBytes($fullPath)
                     $res.ContentLength64 = $buffer.Length
