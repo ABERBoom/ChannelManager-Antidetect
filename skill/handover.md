@@ -206,7 +206,7 @@ Sử dụng `ps2exe` để đóng gói `server.ps1` và `Launcher.ps1` thành fi
 ## 10. Lệnh Cấm Tuyệt Đối (DO NOT TOUCH)
 
 > [!CAUTION]
-> **LUỒNG HOẠT ĐỘNG CỦA CHROME ĐÃ ỔN ĐỊNH 100%. NGHIÊM CẤM CHỈNH SỬA!**
-> Hiện tại, logic giả mạo WebRTC và khởi chạy cấu hình proxy của **Chrome** (bao gồm CDP Injection, Unpacked Extension, các tham số dòng lệnh) trong file `server.ps1` và thư mục `webrtc-guard-chrome` đã hoàn thiện và hoạt động cực kỳ mượt mà. 
+> **LUỒNG HOẠT ĐỘNG CỦA CHROME VÀ FIREFOX ĐÃ ỔN ĐỊNH 100%. NGHIÊM CẤM CHỈNH SỬA!**
+> Hiện tại, logic giả mạo WebRTC, injection cấu hình proxy, và luồng khởi chạy của **cả Chrome và Firefox** (bao gồm CDP Injection, Unpacked Extension, ghi đè file `user.js`/`prefs.js`, và các tham số dòng lệnh) trong file `server.ps1` cùng thư mục `webrtc-guard-chrome` / `webrtc-guard-dynamic-firefox` đã được hoàn thiện và hoạt động cực kỳ mượt mà. 
 > 
-> **Mọi hành động can thiệp, chỉnh sửa, hoặc "tối ưu hóa" vào đoạn mã liên quan đến Chrome đều BỊ CẤM HOÀN TOÀN.** Bất kỳ thay đổi nào (như thêm cờ log, đổi policy WebRTC) cũng có thể dẫn đến việc phá vỡ WebRTC Guard, làm lộ IP thật, hoặc sinh ra các cửa sổ console đen bất thường. KHÔNG ĐƯỢC PHÉP CHẠM VÀO!
+> **Mọi hành động can thiệp, chỉnh sửa, hoặc "tối ưu hóa" vào đoạn mã liên quan đến Chrome và Firefox đều BỊ CẤM HOÀN TOÀN.** Bất kỳ thay đổi nào (như thêm cờ log, đổi policy WebRTC, sửa luồng khởi động trình duyệt) cũng có thể dẫn đến việc phá vỡ hệ thống Antidetect, làm lộ IP thật, gây rò rỉ dữ liệu, hoặc sinh ra các cửa sổ console đen bất thường. KHÔNG ĐƯỢC PHÉP CHẠM VÀO!
