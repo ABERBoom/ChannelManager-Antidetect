@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "WebRTC Guard (Dynamic)",
-  "version": "1.1",
+  "version": "1.0",
   "description": "Dynamically fetches proxy IP and spoofs WebRTC without static hardcoding.",
   "permissions": [
     "webRequest",
@@ -9,13 +9,17 @@
     "<all_urls>"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js"
+    ]
   },
   "browser_specific_settings": {
     "gecko": {
       "id": "webrtc-guard-dynamic@channelmanager.local",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": [
+          "none"
+        ]
       }
     }
   }

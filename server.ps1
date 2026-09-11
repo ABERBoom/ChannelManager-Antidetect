@@ -1,8 +1,12 @@
 # server.ps1 - Channel Manager Backend
 $ErrorActionPreference = "Stop"
+Out-File -FilePath "C:\Users\Sonix\server_debug.log" -InputObject "Server starting..." -Append
 $script:relays = @{}
 $script:listener = $null
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$scriptDir = $global:AppPath
+if ([string]::IsNullOrEmpty($scriptDir)) { $scriptDir = $PSScriptRoot }
+if ([string]::IsNullOrEmpty($scriptDir)) { $scriptDir = $PWD.Path }
+Out-File -FilePath "C:\Users\Sonix\server_debug.log" -InputObject "Script dir: $scriptDir" -Append
 $dataFile = Join-Path $scriptDir "profiles.json"
 $dataDir = Join-Path $scriptDir "data"
 $profilesDir = Join-Path $dataDir "profiles"

@@ -4,3 +4,5 @@
 /profiles/
 /icons/
 *.log
+/release/
+test_compile.*

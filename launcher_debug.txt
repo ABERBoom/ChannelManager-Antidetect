@@ -1,0 +1,8 @@
+Launcher started.
+exeDir: E:\TOOL\Source Code\Agent Antigravity\release\ChannelManager
+coreBinPath: E:\TOOL\Source Code\Agent Antigravity\release\ChannelManager\data\core.bin
+core.bin exists. Constructing command.
+Starting powershell...
+Powershell started. Sleeping 3s.
+Opening Edge at 8780...
+Launcher finished.

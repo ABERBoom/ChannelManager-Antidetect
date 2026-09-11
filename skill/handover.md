@@ -168,10 +168,9 @@ Khi dùng proxy, WebRTC báo N/A (không có IP) hoặc rò rỉ IP thật. Khi 
    - Script `content.js` sử dụng `escape()` để giải mã chuỗi Base64. Hàm này cũ và đôi khi hoạt động không ổn định với UTF-8 trên Firefox, dẫn tới lỗi script crash không thể thực thi. Thêm vào đó, Firefox 115+ có cơ chế ngầm tự động xóa các file `.xpi` không có chữ ký khi đưa vào thư mục extensions.
 
 **Giải pháp (Fixes) đã áp dụng:**
-- **Sửa lỗi Firefox Race Condition & Cài đặt Extension**:
-  - **Sửa lỗi Race Condition (Vòng lặp Retry):** Khác với Chrome (có thể ghi cứng IP thẳng vào code trước khi chạy vì dùng Unpacked Extension), Firefox yêu cầu file `.xpi` tĩnh và có chữ ký điện tử (Signature) từ AMO, không thể sửa đổi file. Do đó, Firefox phải gọi API (`http://webrtc.local.guard/ip`) lúc khởi động để lấy IP. Lỗi xảy ra do Firefox lấy IP ngay mili-giây đầu tiên khi mạng/proxy chưa kết nối xong. **Khắc phục:** Thêm vòng lặp Retry (thử lại liên tục 10 lần) vào `fetchProxyIp()` trong `background.js` kết hợp với `Promise` trong API `webRequest.onBeforeRequest.addListener(..., ["blocking"])`. Trình duyệt sẽ "đóng băng" quá trình tải trang cho đến khi lấy được Proxy IP thành công.
-  - **Sửa lỗi Parse Encoding:** Sử dụng `new TextDecoder().decode(Uint8Array.from(atob('...')))` để nhúng mã Base64 đồng bộ và an toàn.
-  - **Sửa lỗi cài đặt Extension (Sideloading):** Giữ nguyên phương pháp tự động cài đặt qua thư mục `extensions/` với lưu ý tuyệt đối: Tên file phải khớp chính xác 100% với ID của extension (`webrtc-guard-dynamic@channelmanager.local.xpi`) và file phải được tải trực tiếp từ AMO (Signed file đuôi `.xpi`, nghiêm cấm tự đổi đuôi file `.zip` vì sẽ làm hỏng chữ ký khiến Firefox tự xóa file).
+- **Sửa lỗi Firefox Race Condition & Parsing**:
+  - Gộp trực tiếp mã của `spoof.js` vào `content.js` thông qua chuỗi Base64.
+  - Loại bỏ hàm `escape()`, thay thế bằng đối tượng `TextDecoder()` hiện đại (`new TextDecoder().decode(Uint8Array.from(atob('...')))`) giúp `content.js` giải mã và chèn mã vào `<script>` một cách đồng bộ (synchronous) chuẩn xác và không bị lỗi Encoding.
 - **Sửa lỗi Chrome Extension qua CLI Path Quoting**:
   - Khôi phục cơ chế `--load-extension` thay vì tiêm qua CDP. Bọc cẩn thận tất cả các đường dẫn chứa khoảng trắng vào cặp ngoặc kép `""` (`--load-extension="{0}"`) trước khi truyền qua `Start-Process`. Điều này đảm bảo Chrome load extension WebRTC ổn định 100%.
 - **Quản lý cấu hình Firefox an toàn**:
