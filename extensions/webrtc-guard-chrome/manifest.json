@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "name": "WebRTC Guard Chrome",
+  "version": "1.0",
+  "description": "Protects WebRTC from IP leaks",
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_start",
+    "all_frames": true,
+    "match_about_blank": true
+  }],
+  "web_accessible_resources": ["spoof.js"]
+}

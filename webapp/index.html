@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Channel Manager</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">♾️</div>
+                <div class="brand-name">Channel Manager</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">📋</span>
+                    Quản lý Profile
+                </a>
+                <!-- Future features -->
+                <a href="#" class="nav-item" data-tab="tab-proxies">
+                    <span class="nav-icon">🌐</span>
+                    Quản lý Proxies
+                </a>
+                <a href="#" class="nav-item disabled" title="Tính năng tương lai">
+                    <span class="nav-icon">🧩</span>
+                    Quản lý Extensions
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <h2>📋 Quản lý Profile</h2>
+            </header>
+
+            <div class="toolbar" style="margin-bottom: 10px; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid var(--border); display: flex; gap: 30px; align-items: center; justify-content: flex-start;">
+                <div id="installer-status-firefox" style="display: flex; gap: 10px; align-items: center;">
+                    <span class="status-badge" style="background: var(--bg-secondary); color: var(--text-primary)">🦊 Cài đặt Firefox: <span id="ff-status">Đang kiểm tra...</span></span>
+                    <button class="btn btn-primary btn-sm" id="btn-ff-install" style="display: none; padding: 4px 8px; font-size: 11px;">Cài đặt mới</button>
+                    <button class="btn btn-danger btn-sm" id="btn-ff-download" style="display: none; padding: 4px 8px; font-size: 11px;">Tải bổ sung</button>
+                </div>
+                <div id="installer-status-chrome" style="display: flex; gap: 10px; align-items: center;">
+                    <span class="status-badge" style="background: var(--bg-secondary); color: var(--text-primary)">🌐 Cài đặt Chrome: <span id="cr-status">Đang kiểm tra...</span></span>
+                    <button class="btn btn-primary btn-sm" id="btn-cr-install" style="display: none; padding: 4px 8px; font-size: 11px;">Cài đặt mới</button>
+                    <button class="btn btn-danger btn-sm" id="btn-cr-download" style="display: none; padding: 4px 8px; font-size: 11px;">Tải bổ sung</button>
+                </div>
+            </div>
+            
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" id="btn-create-profile">
+                        <span>+</span> Tạo Profile Mới
+                    </button>
+                    <button class="btn btn-danger" id="btn-delete-selected" disabled>Xóa</button>
+                    <div class="divider"></div>
+                    <button class="btn btn-secondary" id="btn-open-selected" disabled>Mở hàng loạt</button>
+                    <button class="btn btn-secondary" id="btn-close-selected" disabled>Đóng hàng loạt</button>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-secondary" id="btn-open-ext-folder" style="margin-right: 10px;">Mở thư mục Extension</button>
+                    <input type="text" class="form-control search-input" id="search-profile" placeholder="Tìm kiếm profile...">
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="profile-table">
+                    <thead>
+                        <tr>
+                            <th width="40"><input type="checkbox" id="check-all"></th>
+                            <th width="60">ID</th>
+                            <th>Tên</th>
+                            <th>Trình duyệt</th>
+                            <th width="300">Đường dẫn Portable</th>
+                            <th>Proxy</th>
+                            <th width="180">Hành động</th>
+                            <th>Lần cuối truy cập</th>
+                        </tr>
+                    </thead>
+                    <tbody id="profile-list">
+                        <!-- Profiles will be injected here via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        
+        <!-- Proxies Tab Content -->
+        <main class="main-content" id="tab-proxies" style="display: none;">
+            <header class="header">
+                <h2>🌐 Quản lý Proxies</h2>
+            </header>
+            
+            <div class="toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" id="btn-create-proxy">
+                        <span>+</span> Thêm Proxy Mới
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="profile-table">
+                    <thead>
+                        <tr>
+                            <th width="60">STT</th>
+                            <th>Tên</th>
+                            <th>IP/Domain</th>
+                            <th width="150">Trạng thái Ping</th>
+                            <th width="120">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="proxy-list">
+                        <!-- Proxies will be injected here via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create Profile Modal -->
+    <div class="modal-overlay" id="modal-create">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Thêm Profile Mới</h3>
+                <button class="btn-close" id="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-create-profile">
+                    <div class="form-group">
+                        <label>Tên Profile *</label>
+                        <input type="text" id="p-name" class="form-control" required placeholder="Nhập tên profile...">
+                    </div>
+                    <div class="form-group">
+                        <label>Văn bản trên Icon (Hiện trên Taskbar)</label>
+                        <div class="icon-setup">
+                            <input type="text" id="p-badge" class="form-control" placeholder="Ví dụ: 00" maxlength="15" style="width: 150px">
+                        </div>
+                        <small style="color: var(--text-secondary)">Icon sẽ được tạo tự động với đoạn văn bản này sau khi bạn Kết nối thư mục.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-modal">Hủy</button>
+                <button class="btn btn-primary" id="btn-submit-modal">Lưu Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="modal-edit">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Sửa Tên Profile</h3>
+                <button class="btn-close" id="btn-close-edit">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-profile">
+                    <input type="hidden" id="edit-p-id">
+                    <div class="form-group">
+                        <label>Tên Profile Mới *</label>
+                        <input type="text" id="edit-p-name" class="form-control" required placeholder="Nhập tên mới...">
+                        <small style="color: var(--text-secondary)">Nếu profile đã được kết nối, thư mục vật lý cũng sẽ được đổi tên theo tên mới này.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-edit">Hủy</button>
+                <button class="btn btn-primary" id="btn-submit-edit">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Profile Modal -->
+    <div class="modal-overlay" id="modal-link">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Kết nối Thư mục Portable</h3>
+                <button class="btn-close" id="btn-close-link">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-link-profile">
+                    <input type="hidden" id="link-p-id">
+                    <div class="form-group">
+                        <label>Đường dẫn thư mục đã giải nén *</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text" id="link-p-path" class="form-control" required placeholder="Ví dụ: C:\CaiDat\PhanMem\FirefoxPortable_1" style="flex: 1;">
+                            <button type="button" class="btn btn-secondary" id="btn-pick-folder" style="white-space: nowrap;">📁 Chọn</button>
+                        </div>
+                        <small style="color: var(--warning)">Thư mục này phải chứa FirefoxPortable.exe hoặc GoogleChromePortable.exe. Thư mục này sẽ được đổi tên thành tên profile.</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-link">Hủy</button>
+                <button class="btn btn-primary" id="btn-submit-link">Kết nối</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Proxy Modal (Assign to Profile) -->
+    <div class="modal-overlay" id="modal-proxy">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Gán Proxy cho Profile</h3>
+                <button class="btn-close" id="btn-close-proxy">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-proxy">
+                    <input type="hidden" id="proxy-p-id">
+                    <div class="form-group">
+                        <label>Chọn Proxy có sẵn</label>
+                        <select id="proxy-select" class="form-control">
+                            <option value="">-- Không dùng Proxy --</option>
+                            <!-- Options injected via JS -->
+                        </select>
+                        <small style="color: var(--text-secondary)">Bạn có thể tạo thêm Proxy ở Tab "Quản lý Proxies".</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-proxy">Hủy</button>
+                <button class="btn btn-primary" id="btn-submit-proxy">Lưu Proxy</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Proxy Modal -->
+    <div class="modal-overlay" id="modal-create-proxy">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Thêm Proxy Mới</h3>
+                <button class="btn-close" id="btn-close-create-proxy">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-create-proxy">
+                    <div class="form-group">
+                        <label>Tên định danh *</label>
+                        <input type="text" id="cp-name" class="form-control" required placeholder="VD: proxy1">
+                    </div>
+                    <div class="form-group">
+                        <label>Chuỗi Proxy (IP:Port hoặc SOCKS5://IP:Port:User:Pass)</label>
+                        <input type="text" id="cp-string" class="form-control" placeholder="Ví dụ: 192.168.1.1:8080:user:pass">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btn-cancel-create-proxy">Hủy</button>
+                <button class="btn btn-primary" id="btn-submit-create-proxy">Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+  "name": "WebRTC Guard",
+  "version": "1.0",
+  "description": "Protects WebRTC from IP leaks",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "webrtc-guard@channelmanager",
+      "strict_min_version": "78.0"
+    }
+  },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_start",
+    "all_frames": true,
+    "match_about_blank": true
+  }],
+  "web_accessible_resources": ["spoof.js"]
+}
